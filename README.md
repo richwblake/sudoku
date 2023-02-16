@@ -20,8 +20,8 @@ Uses the make program to compile and generate executable binary. Simply execute 
 
 ### Checklist
 
-⬜️ Generate random boards
-⬜️ Validate if random board is valid
-⬜️ Generate solution to an arbitrary board in O(9^(n^2)), where n is size of the set of single positive integers.
-⬜️ Save progress to sqlite database to allow players to save progress
+- [ ] Generate random boards
+- [ ] Validate if random board is valid
+- [ ] Generate solution to an arbitrary board in O(9^(n^2)), where n is size of the set of single positive integers.
+- [ ] Save progress to sqlite database to allow players to save progress
 
