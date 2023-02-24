@@ -5,16 +5,18 @@
 #define MAX_N 9
 
 #include "player.h"
+#include "board.h"
 
 class Game
 {
     private:
         Player * player;
-        int board[9][9];
+        Board * board;
     public:
         Game ();
         int init();
-        void printBoard();
+        void greetPlayer();
+        std::string getResponse(std::string query);
 };
 
 #endif

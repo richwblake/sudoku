@@ -1,40 +1,59 @@
 #include "game.h"
 #include <iostream>
 
-Game::Game()
-{
-    for (int i = 0; i < MAX_N; ++i)
-        for (int j = 0; j < MAX_N; ++j)
-            board[i][j] = 0; 
-}
+Game::Game() {}
 
 int Game::init()
 {
     std::string name;
-    std::cout << "Welcome to Sudoku, please enter your name" << std::endl;
-    std::cin >> name; 
+    // std::string response;
+    // std::cout << "Welcome to Sudoku, please enter your name" << std::endl;
+    // std::cin >> name; 
+
+    name = getResponse(std::string("Welcome to Sudoku, please enter your name"));
 
     player = new Player(std::string(name));
 
-    printBoard();
+    this->greetPlayer();
 
+    // std::cout << ": ";
+    // std::cin >> response;
+
+    // std::cout <<  << std::endl;
+
+    getResponse("\nWould you like an Easy(E), Medium(M), or Hard(H) board?");
+
+
+    board = new Board();
+
+    board->print();
+
+    std::cout << board->isValid() << std::endl;
     return 0;
 }
 
-void Game::printBoard()
+std::string Game::getResponse(std::string query)
 {
-    std::cout << "-------------------------" << std::endl;
-    for (int i = 0; i < MAX_N; ++i) {
-        std::cout << "|";
-        for (int j = 0; j < MAX_N; ++j) {
-            std::cout << " " << board[i][j];
-            if ((j + 1) % 3 == 0)
-                std::cout << " |";
-        }
-        if ((i + 1) % 3 == 0)
-            std::cout << "\n-------------------------" << std::endl;
-        else
-            std::cout << std::endl;
-    }
+    std::cout << query << std::endl;
+    std::cout << ": ";
+    
+    std::string response;
+    std::cin >> response;
+    return response;
 }
+
+void Game::greetPlayer()
+{
+    std::cout << "\nHello, " << this->player->getName() << "!" << std::endl;
+}
+
+
+
+
+
+
+
+
+
+
 
