@@ -1,23 +1,25 @@
 #include "board.h"
 #include <iostream>
 
-Board::Board()
+Board::Board(Difficulty* d)
 {
     char easy[MAX_N][MAX_N] = {
-        {'5', '3', '_', '_', '7', '_', '_', '_', '_'},
-        {'6', '_', '_', '1', '9', '5', '_', '_', '_'},
-        {'_', '9', '8', '_', '_', '_', '_', '6', '_'},
-        {'8', '_', '_', '_', '6', '_', '_', '_', '3'},
-        {'4', '_', '_', '8', '_', '3', '_', '_', '1'},
-        {'7', '_', '_', '_', '2', '_', '_', '_', '6'},
-        {'_', '6', '_', '_', '_', '_', '2', '8', '_'},
-        {'_', '_', '_', '4', '1', '9', '_', '_', '5'},
-        {'_', '_', '_', '_', '8', '_', '_', '7', '9'}
+        {'6', '2', '4', '8', '3', '_', '1', '_', '7'},
+        {'_', '1', '8', '9', '2', '_', '3', '6', '5'},
+        {'_', '_', '_', '7', '6', '_', '_', '4', '_'},
+        {'_', '_', '_', '_', '8', '_', '9', '_', '1'},
+        {'_', '_', '9', '_', '_', '6', '_', '_', '_'},
+        {'1', '4', '_', '_', '_', '_', '5', '8', '_'},
+        {'9', '6', '_', '_', '_', '8', '_', '_', '3'},
+        {'_', '_', '_', '_', '1', '_', '_', '5', '_'},
+        {'_', '7', '1', '_', '4', '3', '_', '_', '_'}
     };
 
     for (int i = 0; i < MAX_N; ++i)
         for (int j = 0; j < MAX_N; ++j)
             board[i][j] = easy[i][j];
+
+    this->difficulty = *d;
 }
 
 void Board::print()
@@ -96,4 +98,83 @@ bool Board::isValid()
         }
     }
     return true;
+}
+
+bool Board::moveIsValid(int move, int row, int col)
+{
+    // check row to see if move is already there
+    for (int i = 0; i < MAX_N; ++i)
+        if (board[row][i] != '_') {
+            if (board[row][i] - '0' == move)
+                return false;
+        }
+    
+    // check column to see if move is already there
+    for (int i = 0; i < MAX_N; ++i)
+        if (board[i][col] != '_')
+            if (board[i][col] - '0' == move)
+                return false;
+
+
+    // Define bounds of sub-box where move resides
+    int rowEnd = 3 * (row / 3) + 2;
+    int colEnd = 3 * (col / 3) + 2;
+
+    // iterate through sub-box indicies to see if move is already there
+    for (int rowBegin = 3 * (row / 3); rowBegin <= rowEnd; ++rowBegin)
+        for (int colBegin = 3 * (col / 3); colBegin <= colEnd; ++colBegin)
+            if (board[rowBegin][colBegin] != '_')
+                if (board[rowBegin][colBegin] - '0' == move)
+                    return false;
+
+    // move is valid
+    return true;
+}
+
+bool Board::solveSudoku(int row, int col)
+{
+    // BASE CASES
+    // If reached the end of the grid and grid is valid, return true
+    // If reached the end and grid is invalid, no solution exists return false
+    if (row == MAX_N - 1 && col == MAX_N) {
+        if (isValid()) {
+            std::cout << "Solution found" << std::endl;
+            print();    
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // if col is greater than 8, move pointers to next row
+    if (col > 8) {
+        col = 0;
+        ++row;
+    }
+
+    // if grid contains number in current position, recur to next position
+    if (board[row][col] != '_') {
+        return solveSudoku(row, col + 1);
+    }
+   
+    // loop through values 1-9, and try each value in the current spot on grid
+    // only try to make move on empty position
+    // if the move is valid, play move and recur to next position
+    // if move is invalid, continue loop and try next position
+    for (int i = 1; i < MAX_N + 1; ++i) {
+        if (moveIsValid(i, row, col)) {
+            board[row][col] = char(i + 48);
+
+            if (solveSudoku(row, col + 1))
+                return true;
+
+            board[row][col] = '_';
+        }
+    }
+    return false;
+}
+
+Board::Difficulty Board::getDifficulty()
+{
+    return this->difficulty;
 }

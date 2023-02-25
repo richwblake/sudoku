@@ -5,30 +5,40 @@ Game::Game() {}
 
 int Game::init()
 {
-    std::string name;
-    // std::string response;
-    // std::cout << "Welcome to Sudoku, please enter your name" << std::endl;
-    // std::cin >> name; 
+    player = new Player(getResponse("Welcome to Sudoku, please enter your name"));
+    greetPlayer();
 
-    name = getResponse(std::string("Welcome to Sudoku, please enter your name"));
+    Board::Difficulty d;
 
-    player = new Player(std::string(name));
+    switch(stoi(getResponse("\nWould you like an Easy(0), Medium(1), or Hard(2) board?"))) {
+        case 0:
+            d = Board::easy;
+            break;
+        case 1:
+            d = Board::medium;
+            break;
+        case 2:
+            d = Board::hard;
+            break;
+    }
 
-    this->greetPlayer();
-
-    // std::cout << ": ";
-    // std::cin >> response;
-
-    // std::cout <<  << std::endl;
-
-    getResponse("\nWould you like an Easy(E), Medium(M), or Hard(H) board?");
-
-
-    board = new Board();
-
+    board = new Board(&d);
+    
     board->print();
 
-    std::cout << board->isValid() << std::endl;
+    int resp;
+    resp = stoi(getResponse("Would you like to play(0), or would you rather the computer complete the game?(1)"));
+    
+
+    if (resp) {
+        // call sudokuSolver method in game
+        board->solveSudoku(0,0);
+    } else {
+        // begin turn based game 
+        std::cout << "Not implemented yet" << std::endl;
+    }
+
+    board->print();
     return 0;
 }
 
@@ -36,7 +46,7 @@ std::string Game::getResponse(std::string query)
 {
     std::cout << query << std::endl;
     std::cout << ": ";
-    
+
     std::string response;
     std::cin >> response;
     return response;
